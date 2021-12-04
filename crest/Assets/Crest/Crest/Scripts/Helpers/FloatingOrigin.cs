@@ -145,6 +145,8 @@ namespace Crest
             }
         }
 
+        Vector3 _originOffset;
+
         /// <summary>
         /// Notify ocean of origin shift
         /// </summary>
@@ -153,6 +155,9 @@ namespace Crest
             if (OceanRenderer.Instance)
             {
                 OceanRenderer.Instance._lodTransform.SetOrigin(newOrigin);
+
+                Shader.SetGlobalVector("_CrestFloatingOriginOffset", _originOffset - newOrigin);
+                _originOffset -= newOrigin;
 
                 var fos = OceanRenderer.Instance.GetComponentsInChildren<IFloatingOrigin>();
                 foreach (var fo in fos)
@@ -165,6 +170,24 @@ namespace Crest
                 foreach (var gerstner in gerstners)
                 {
                     gerstner.SetOrigin(newOrigin);
+                }
+
+                {
+                    // FFT components.
+                    var shapes = FindObjectsOfType<ShapeFFT>();
+                    foreach (var shape in shapes)
+                    {
+                        shape.SetOrigin(newOrigin);
+                    }
+                }
+
+                {
+                    // Gerstner components.
+                    var shapes = FindObjectsOfType<ShapeGerstner>();
+                    foreach (var shape in shapes)
+                    {
+                        shape.SetOrigin(newOrigin);
+                    }
                 }
             }
         }

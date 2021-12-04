@@ -188,7 +188,13 @@ namespace Crest
         ComputeShader _shaderGerstner;
         int _krnlGerstner = -1;
 
+        // Active material.
         Material _matGenerateWaves;
+        // Cache material options.
+        Material _matGenerateWavesGlobal;
+        Material _matGenerateWavesGeometry;
+
+        Vector3 _originOffset;
 
         readonly int sp_FirstCascadeIndex = Shader.PropertyToID("_FirstCascadeIndex");
         readonly int sp_TextureRes = Shader.PropertyToID("_TextureRes");
@@ -200,6 +206,7 @@ namespace Crest
         static readonly int sp_RespectShallowWaterAttenuation = Shader.PropertyToID("_RespectShallowWaterAttenuation");
         static readonly int sp_FeatherWaveStart = Shader.PropertyToID("_FeatherWaveStart");
         static readonly int sp_MaximumAttenuationDepth = Shader.PropertyToID("_MaximumAttenuationDepth");
+        static readonly int sp_Offset = Shader.PropertyToID("_Offset");
         readonly int sp_AxisX = Shader.PropertyToID("_AxisX");
 
         readonly float _twoPi = 2f * Mathf.PI;
@@ -502,20 +509,12 @@ namespace Crest
 
         public void SetOrigin(Vector3 newOrigin)
         {
-            if (_phases == null || _phases2 == null) return;
-
-            var windAngle = _waveDirectionHeadingAngle;
-            for (int i = 0; i < _phases.Length; i++)
+            if (_matGenerateWaves != null)
             {
-                var direction = new Vector3(Mathf.Cos((windAngle + _angleDegs[i]) * Mathf.Deg2Rad), 0f, Mathf.Sin((windAngle + _angleDegs[i]) * Mathf.Deg2Rad));
-                var phaseOffsetMeters = Vector3.Dot(newOrigin, direction);
-
-                // wave number
-                var k = 2f * Mathf.PI / _wavelengths[i];
-
-                _phases[i] = Mathf.Repeat(_phases[i] + phaseOffsetMeters * k, Mathf.PI * 2f);
-                _phases2[i] = Mathf.Repeat(_phases2[i] + phaseOffsetMeters * k, Mathf.PI * 2f);
+                _matGenerateWaves.SetVector(sp_Offset, _originOffset - newOrigin);
             }
+
+            _originOffset -= newOrigin;
         }
 
         /// <summary>
@@ -636,11 +635,23 @@ namespace Crest
 
             if (_meshForDrawingWaves == null)
             {
-                _matGenerateWaves = new Material(Shader.Find("Hidden/Crest/Inputs/Animated Waves/Gerstner Global"));
+                if (_matGenerateWavesGlobal == null)
+                {
+                    _matGenerateWavesGlobal = new Material(Shader.Find("Hidden/Crest/Inputs/Animated Waves/Gerstner Global"));
+                    _matGenerateWavesGlobal.hideFlags = HideFlags.HideAndDontSave;
+                }
+
+                _matGenerateWaves = _matGenerateWavesGlobal;
             }
             else
             {
-                _matGenerateWaves = new Material(Shader.Find("Crest/Inputs/Animated Waves/Gerstner Geometry"));
+                if (_matGenerateWavesGeometry == null)
+                {
+                    _matGenerateWavesGeometry = new Material(Shader.Find("Crest/Inputs/Animated Waves/Gerstner Geometry"));
+                    _matGenerateWavesGeometry.hideFlags = HideFlags.HideAndDontSave;
+                }
+
+                _matGenerateWaves = _matGenerateWavesGeometry;
             }
 
             // Submit draws to create the Gerstner waves

@@ -77,6 +77,7 @@ Shader "Crest/Inputs/Animated Waves/Gerstner Geometry"
             float _Weight;
             float2 _AxisX;
             half _MaximumAttenuationDepth;
+            float3 _Offset;
             CBUFFER_END
 
             v2f vert(appdata v)
@@ -85,7 +86,7 @@ Shader "Crest/Inputs/Animated Waves/Gerstner Geometry"
 
                 const float3 positionOS = v.vertex.xyz;
                 o.vertex = UnityObjectToClipPos(positionOS);
-                const float3 worldPos = mul( unity_ObjectToWorld, float4(positionOS, 1.0) ).xyz;
+                const float3 worldPos = mul( unity_ObjectToWorld, float4(positionOS, 1.0) ).xyz - _Offset;
 
                 // UV coordinate into the cascade we are rendering into
                 o.uv_slice = WorldToUV(worldPos.xz, _CrestCascadeData[_LD_SliceIndex], _LD_SliceIndex);
