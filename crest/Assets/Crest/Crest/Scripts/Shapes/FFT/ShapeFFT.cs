@@ -172,8 +172,6 @@ namespace Crest
         Material _matGenerateWavesGlobal;
         Material _matGenerateWavesGeometry;
 
-        Vector3 _originOffset;
-
         static readonly int sp_WaveBuffer = Shader.PropertyToID("_WaveBuffer");
         static readonly int sp_WaveBufferSliceIndex = Shader.PropertyToID("_WaveBufferSliceIndex");
         static readonly int sp_AverageWavelength = Shader.PropertyToID("_AverageWavelength");
