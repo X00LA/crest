@@ -194,8 +194,6 @@ namespace Crest
         Material _matGenerateWavesGlobal;
         Material _matGenerateWavesGeometry;
 
-        Vector3 _originOffset;
-
         readonly int sp_FirstCascadeIndex = Shader.PropertyToID("_FirstCascadeIndex");
         readonly int sp_TextureRes = Shader.PropertyToID("_TextureRes");
         readonly int sp_CascadeParams = Shader.PropertyToID("_GerstnerCascadeParams");
@@ -206,7 +204,6 @@ namespace Crest
         static readonly int sp_RespectShallowWaterAttenuation = Shader.PropertyToID("_RespectShallowWaterAttenuation");
         static readonly int sp_FeatherWaveStart = Shader.PropertyToID("_FeatherWaveStart");
         static readonly int sp_MaximumAttenuationDepth = Shader.PropertyToID("_MaximumAttenuationDepth");
-        static readonly int sp_Offset = Shader.PropertyToID("_Offset");
         readonly int sp_AxisX = Shader.PropertyToID("_AxisX");
 
         readonly float _twoPi = 2f * Mathf.PI;
@@ -505,16 +502,6 @@ namespace Crest
             buf.SetComputeTextureParam(_shaderGerstner, _krnlGerstner, sp_WaveBuffer, _waveBuffers);
 
             buf.DispatchCompute(_shaderGerstner, _krnlGerstner, _waveBuffers.width / LodDataMgr.THREAD_GROUP_SIZE_X, _waveBuffers.height / LodDataMgr.THREAD_GROUP_SIZE_Y, _lastCascade - _firstCascade + 1);
-        }
-
-        public void SetOrigin(Vector3 newOrigin)
-        {
-            if (_matGenerateWaves != null)
-            {
-                _matGenerateWaves.SetVector(sp_Offset, _originOffset - newOrigin);
-            }
-
-            _originOffset -= newOrigin;
         }
 
         /// <summary>

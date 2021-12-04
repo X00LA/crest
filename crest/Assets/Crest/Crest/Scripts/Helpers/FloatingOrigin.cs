@@ -67,6 +67,8 @@ namespace Crest
 
         ParticleSystem.Particle[] _particleBuffer = null;
 
+        Vector3 _originOffset;
+
         void LateUpdate()
         {
             var newOrigin = Vector3.zero;
@@ -77,6 +79,11 @@ namespace Crest
             {
                 MoveOrigin(newOrigin);
             }
+        }
+
+        void OnDisable()
+        {
+            Shader.SetGlobalVector("_CrestFloatingOriginOffset", Vector3.zero);
         }
 
         void MoveOrigin(Vector3 newOrigin)
@@ -145,8 +152,6 @@ namespace Crest
             }
         }
 
-        Vector3 _originOffset;
-
         /// <summary>
         /// Notify ocean of origin shift
         /// </summary>
@@ -170,24 +175,6 @@ namespace Crest
                 foreach (var gerstner in gerstners)
                 {
                     gerstner.SetOrigin(newOrigin);
-                }
-
-                {
-                    // FFT components.
-                    var shapes = FindObjectsOfType<ShapeFFT>();
-                    foreach (var shape in shapes)
-                    {
-                        shape.SetOrigin(newOrigin);
-                    }
-                }
-
-                {
-                    // Gerstner components.
-                    var shapes = FindObjectsOfType<ShapeGerstner>();
-                    foreach (var shape in shapes)
-                    {
-                        shape.SetOrigin(newOrigin);
-                    }
                 }
             }
         }

@@ -38,7 +38,6 @@ Shader "Hidden/Crest/Inputs/Animated Waves/Gerstner Global"
 			float2 _AxisX;
 			float _RespectShallowWaterAttenuation;
 			half _MaximumAttenuationDepth;
-			float3 _Offset;
 			CBUFFER_END
 
 			struct Attributes
@@ -59,7 +58,7 @@ Shader "Hidden/Crest/Inputs/Animated Waves/Gerstner Global"
 
 				o.uv_uvWaves.xy = GetFullScreenTriangleTexCoord(input.VertexID);
 
-				float2 worldPosXZ = UVToWorld( o.uv_uvWaves.xy, _LD_SliceIndex, _CrestCascadeData[_LD_SliceIndex] ) - _Offset.xz;
+				float2 worldPosXZ = UVToWorld( o.uv_uvWaves.xy, _LD_SliceIndex, _CrestCascadeData[_LD_SliceIndex] ) - _CrestFloatingOriginOffset.xz;
 
 				// UV coordinate into wave buffer
 				float2 wavePos = float2( dot(worldPosXZ, _AxisX), dot(worldPosXZ, float2(-_AxisX.y, _AxisX.x)) );

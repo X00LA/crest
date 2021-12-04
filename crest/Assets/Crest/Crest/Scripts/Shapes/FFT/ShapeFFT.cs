@@ -180,7 +180,6 @@ namespace Crest
         static readonly int sp_RespectShallowWaterAttenuation = Shader.PropertyToID("_RespectShallowWaterAttenuation");
         static readonly int sp_MaximumAttenuationDepth = Shader.PropertyToID("_MaximumAttenuationDepth");
         static readonly int sp_FeatherWaveStart = Shader.PropertyToID("_FeatherWaveStart");
-        static readonly int sp_Offset = Shader.PropertyToID("_Offset");
         readonly int sp_AxisX = Shader.PropertyToID("_AxisX");
 
         /// <summary>
@@ -193,16 +192,6 @@ namespace Crest
             // Matches constant with same name in FFTSpectrum.compute
             float SAMPLES_PER_WAVE = 4f;
             return texelSize * SAMPLES_PER_WAVE;
-        }
-
-        public void SetOrigin(Vector3 newOrigin)
-        {
-            if (_matGenerateWaves != null)
-            {
-                _matGenerateWaves.SetVector(sp_Offset, _originOffset - newOrigin);
-            }
-
-            _originOffset -= newOrigin;
         }
 
         public void CrestUpdate(CommandBuffer buf)
